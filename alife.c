@@ -113,8 +113,8 @@ int sample(char *ex)
             cell[x][y] = 0;
         }
     }
-    
-//graider gun
+
+//glaider gun
     if(strcmp(ex, "gg") == 0){
         cell[2][6] = 1;
         cell[2][7] = 1;
