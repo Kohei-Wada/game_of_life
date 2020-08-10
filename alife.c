@@ -2,28 +2,30 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 
 #define X 100
 #define Y 50
 
 int cells[X][Y];
 int nextcells[X][Y];
-int cursorX = 50, cursorY = 25;
+int cursorX = X/2, cursorY = Y/2;
 
 
 
-void init_cells(int option)
+void init_cells(int random)
 {
 int x, y;
 
-    if(option == 0){
+    if(!random){
         for(y = 0; y < Y; ++y){
             for(x = 0; x < X; ++x){
                 cells[x][y] = 0;
             }
         }
     }
-    else if(option == 1){
+    else if(random){
+        srand((unsigned int)time(NULL));
         for(y = 0; y < Y; ++y){
             for(x = 0; x < X; ++x){
                 cells[x][y] = rand()%2;
@@ -37,10 +39,10 @@ int x, y;
 }
 
 
+
 void print_cells(void)
 {
 int x, y;
-static int counter = 0;
 
     for(y = 0; y < Y; ++y){
         for(x = 0; x < X; ++x){
@@ -54,9 +56,8 @@ static int counter = 0;
         printf("\n");
     }
 
-    printf("\ngen = %d\n", counter);
-    ++counter;
 }
+
 
 
 int search(int x, int y)
@@ -94,6 +95,7 @@ int ret = 1;
 }
 
 
+
 void next(void)
 {
 int ret, x, y;
@@ -119,6 +121,7 @@ int ret, x, y;
 }
 
 
+
 void set_cells(void)
 {
 int active = 1;
@@ -134,7 +137,6 @@ int active = 1;
 
 void run(void)
 {
-//int counter = 0;
 int time = 1000000 * 0.1;
 
     while(1){
