@@ -1,23 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #define X 100
 #define Y 50
-
 
 int cells[X][Y];
 int nextcells[X][Y];
 int cursorX = 50, cursorY = 25;
 
 
-void init_cells(void)
+
+void init_cells(int option)
 {
 int x, y;
-    for(y = 0; y < Y; ++y){
-        for(x = 0; x < X; ++x){
-            cells[x][y] = 0;
+
+    if(option == 0){
+        for(y = 0; y < Y; ++y){
+            for(x = 0; x < X; ++x){
+                cells[x][y] = 0;
+            }
         }
+    }
+    else if(option == 1){
+        for(y = 0; y < Y; ++y){
+            for(x = 0; x < X; ++x){
+                cells[x][y] = rand()%2;
+            }
+        }
+    }
+    else{
+        printf("err\n");
+        exit(1);
     }
 }
 
@@ -25,6 +40,8 @@ int x, y;
 void print_cells(void)
 {
 int x, y;
+static int counter = 0;
+
     for(y = 0; y < Y; ++y){
         for(x = 0; x < X; ++x){
             if(x == cursorX && y == cursorY)
@@ -36,6 +53,9 @@ int x, y;
         }
         printf("\n");
     }
+
+    printf("\ngen = %d\n", counter);
+    ++counter;
 }
 
 
@@ -48,7 +68,6 @@ int counter = 0;
                 ++counter;
             }
         }
-
     if(cells[x][y])
         --counter;
 
@@ -69,11 +88,10 @@ int ret = 1;
         case 'a': --cursorX; break;
         case 'l': cells[cursorX][cursorY] = 1; break;
         case 'u': cells[cursorX][cursorY] = 0; break;
-        case 'q': ret = 0; cursorX = -1; cursorY = -1; break;
+        case 'q': ret = 0; cursorX = cursorY = -1; break;
     }
     return ret;
 }
-
 
 
 void next(void)
@@ -93,7 +111,6 @@ int ret, x, y;
                 nextcells[x][y] = 0;
         }
     }
-
     for(x = 1; x < X; ++x){
         for(y = 1; y < Y; ++y){
             cells[x][y] = nextcells[x][y];
@@ -102,27 +119,54 @@ int ret, x, y;
 }
 
 
-
-int main(void)
+void set_cells(void)
 {
-int time = 1000000 * 0.1;
 int active = 1;
 
-    init_cells();
     while(active){
         printf("\033[2J");
         print_cells();
         active = cursor();
-
     }
+}
 
+
+
+void run(void)
+{
+//int counter = 0;
+int time = 1000000 * 0.1;
 
     while(1){
-        printf("\033[2J");
+        //printf("\033[2J");
+        system("clear");
         print_cells();
         usleep(time);
         next();
     }
+}
+
+
+
+int main(int argc, char **argv)
+{
+
+    if(argc == 1){
+        init_cells(0);
+        set_cells();
+    }
+    else if(argc > 1){
+        if(strcmp(argv[1], "-r") == 0){
+            init_cells(1);
+            cursorX = cursorY = -1;
+        }
+        else{
+            printf("err\n");
+            return 1;
+        }
+    }
+
+    run();
 
     return 0;
 }
