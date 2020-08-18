@@ -3,13 +3,56 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <termios.h>
 
 #define X 100
 #define Y 50
 
-int cells[X][Y];
-int nextcells[X][Y];
+int cells[X][Y] = {0};
+int nextcells[X][Y] = {0};
 int cursorX = X/2, cursorY = Y/2;
+
+static struct termios old, current;
+
+
+void init_termios(int echo)
+{
+    tcgetattr(0, &old);
+    current = old;
+    current.c_lflag &= ~ICANON;
+
+    if(echo)
+        current.c_lflag |= ECHO;
+    else
+        current.c_lflag &= ~ECHO;
+
+    tcsetattr(0, TCSANOW, &current);
+}
+
+
+
+void restet_termios(void)
+{
+    tcsetattr(0, TCSANOW, &old);
+}
+
+
+char getch_(int echo)
+{
+char ch;
+
+    init_termios(echo);
+    ch = getchar();
+    restet_termios();
+    return ch;
+}
+
+
+
+char getch(void)
+{
+    return getch_(0);
+}
 
 
 
@@ -81,7 +124,7 @@ int cursor(void)
 {
 int ret = 1;
 
-    int ch = getchar();
+    int ch = getch();
     switch(ch){
         case 'e': --cursorY; break;
         case 'd': ++cursorY; break;
