@@ -8,11 +8,16 @@
 #define X 100
 #define Y 50
 
+
+
 int cells[X][Y] = {0};
 int nextcells[X][Y] = {0};
 int cursorX = X/2, cursorY = Y/2;
 
 static struct termios old, current;
+
+
+
 
 
 void init_termios(int echo)
@@ -125,16 +130,20 @@ int cursor(void)
 int ret = 1;
 
     int ch = getch();
+    
     switch(ch){
-        case 'e': --cursorY; break;
-        case 'd': ++cursorY; break;
-        case 'f': ++cursorX; break;
-        case 'a': --cursorX; break;
-        case 'l': cells[cursorX][cursorY] = 1; break;
-        case 'u': cells[cursorX][cursorY] = 0; break;
-        case 'q': ret = 0; cursorX = cursorY = -1; break;
+        case 'e': --cursorY;                       break;
+        case 'd': ++cursorY;                       break;
+        case 'f': ++cursorX;                       break;
+        case 'a': --cursorX;                       break;
+        case 'l': cells[cursorX][cursorY] = 1;     break;
+        case 'u': cells[cursorX][cursorY] = 0;     break;
+        case 'c': ret = 0; cursorX = cursorY = -1; break;
+        case 'q': exit(0);
     }
+
     return ret;
+
 }
 
 
@@ -142,6 +151,7 @@ int ret = 1;
 void next(void)
 {
 int ret, x, y;
+
     for(x = 1; x < X-1; ++x){
         for(y = 1; y < Y-1; ++y){
             ret = search(x, y);
@@ -197,9 +207,11 @@ int main(int argc, char **argv)
 {
 
     if(argc == 1){
+
         init_cells(0);
         set_cells();
     }
+
     else if(argc > 1){
         if(strcmp(argv[1], "-r") == 0){
             init_cells(1);
