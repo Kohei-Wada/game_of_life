@@ -130,7 +130,7 @@ int cursor(void)
 int ret = 1;
 
     int ch = getch();
-    
+
     switch(ch){
         case 'e': --cursorY;                       break;
         case 'd': ++cursorY;                       break;
