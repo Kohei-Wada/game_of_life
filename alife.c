@@ -6,7 +6,7 @@
 #include <termios.h>
 
 #define X 100
-#define Y 50
+#define Y 70
 
 
 
@@ -180,7 +180,7 @@ void set_cells(void)
 int active = 1;
 
     while(active){
-        printf("\033[2J");
+        system("clear");
         print_cells();
         active = cursor();
     }
@@ -193,7 +193,6 @@ void run(void)
 int time = 1000000 * 0.1;
 
     while(1){
-        //printf("\033[2J");
         system("clear");
         print_cells();
         usleep(time);
